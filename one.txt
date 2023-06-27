@@ -1,0 +1,34 @@
+DLAct_DeleteFile
+Owned by Howie Shi
+Last updated: Nov 14, 2022
+1 min read
+4 people viewed
+Action Payload
+{
+	"isCallId": "*********",
+	"action": "DLAct_DeleteFile",
+	"params": {
+		"fileId": "ZtknSAiubelsIOA3"
+	}
+}
+Result Event
+Event Name: "DLEv_DeleteFile"
+{
+	"isCallId": "*********",
+	"returnCode":0,
+	"result": {
+		"reqId": "{ZtknSAiubelsIOA3}"
+	}
+}
+Notify Event
+Event Name: "DLEv_Ntf_DeleteFile"
+{
+	"reqId": "{ZtknSAiubelsIOA3}"
+	"fileId": "ZtknSAiubelsIOA3"
+	"result":0
+}
+Related Interface
+CmmBool MSGFileContentMgr::DeleteFileByWebFileID(const CString& webFileID, CString& reqID);
+Void Indicate_FileDeleted(const CString& reqID, const CString& webFileID, CmUInt32 result);
+Related Enumeration
+N/A

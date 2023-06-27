@@ -1,0 +1,119 @@
+DLAct_DownloadFile
+Owned by Howie Shi, created with a template
+Last updated: Jun 05, 2023
+2 min read
+15 people viewed
+Action Payload
+{
+	"jsCallId": "************",
+	"action": "DLAct_DownloadFile",
+	"params": {
+		"fileId": "2Fe3k_GjSuGFQkwHPTZR5w"
+		"fileInfo": { 	// optional
+			"fileId": "2Fe3k_GjSuGFQkwHPTZR5w",
+			"ownerId": "8AETt-###############",  // optional
+			"ownerJid": "*****************@xmpp.zoom.us",  // optional
+			"ownerType": "user", // optional
+			"name": "list.txt",  // optional
+			"extName": "txt", 	 // optional
+			"length": 3546,		 // optional
+			"createdTime": 1616132081397, // optional
+			"keyword": "hao", // optional
+			"ibOptions": 0, // optional
+			"folderId": "", // optional
+			"parentId": "", // optional
+			"location": "", // optional
+			"externalFileType": "", // optional
+			"scope": 0,// optional
+			"pbxPhoneNumber": "",// optional
+			"pbxSessionId": "", // optional
+			"resourceType": 0, // optional
+			"modifiedInfo": { // optional
+				"modifiedTime": 1616132081397,
+				"modifiedName": "", // optional
+				"modifiedJid": ""   // optional
+			},
+			"highlight": [ // optional
+				{
+					"content": "....us\\5lucy.hao",
+					"fieldName": 2,
+					"highlightPosition": [
+						{
+							"endPosition": 56,
+							"startPosition": 53
+						}
+					]
+				}
+			],
+			"shared": [ // optional
+				{
+					"shareeJid": "****@conference.xmpp.zoom.us",
+					"sharedTime": 1616132081469,
+					"ibOptions": 0,    // optional
+					"msgId": "", 	   // optional
+					"msgSendTime": 0,  // optional
+					"msgParentTime": 0, // optional
+					"msgParentId": ""  // optional
+				}
+			],
+			"channelTypes": [
+				{
+					"name": "file",
+					"value": 1
+				}
+			]
+		}
+	}
+}
+Notes: 
+
+In terms of internal implementation, we divide this process into two parts: First, the SDK side will update or store the file info (using CZoomMessenger::StoreFileInfoForSearchFile()) by “fileInfo".
+
+“optional" fields: if they are omitted, will be set as default value.
+
+Result Event
+Event Name: "DLEv_DownloadFile"
+{
+	"jsCallId": "************",
+	"reqId": "{28CD74E9-6068-40CC-A0E6-F5B504D36D54}",
+	"result": "0" or 0 // 0 or "0" means success
+}
+Note: "reqId" is optional since we already have "fileId" to identify which file you’re downloading.
+
+Notify Event
+
+// download result
+Event Name: "DLEv_Ntf_DownloadResult"
+{
+  "reqId": "{28CD74E9-6068-40CC-A0E6-F5B504D36D54}",
+  "fileId": "ZtWFyqdHSemhBqZIvHEuAw",
+  "result": 0 // means success, refer to the WebService ErrorCode
+}
+
+// time out
+Event Name: "DLEv_Ntf_DownloadTimeOut"
+{
+  "reqId": "{28CD74E9-6068-40CC-A0E6-F5B504D36D54}",
+  "fileId": "ZtWFyqdHSemhBqZIvHEuAw"
+}
+
+// progress
+Event Name: "DLEv_Ntf_DownloadProgress"
+{
+  "reqId": "{28CD74E9-6068-40CC-A0E6-F5B504D36D54}",
+  "fileId": "ZtWFyqdHSemhBqZIvHEuAw",
+  "ratio": 91, // 91%
+  "completeSize": 131072, // bits
+  "bitPerSecond":  15901 // bits/s
+}
+Related Interface
+
+// call func
+CmmBool MSGFileContentMgr::DownloadFile(const CString& fileID, const CString& localPath, CString& reqID, CmmBool needRebuildConnection = CmmFalse, CmmBool isManual = CmmFalse);
+
+// callback 
+void CZoomMessenger::OnFileContentDownload(const CString& reqID, const CString& fileID, CmmUInt32 result, const CString& savedPath);
+void CZoomMessenger::OnDownloadTimeOut(const CString& reqID, const CString& webFileID);
+void CZoomMessenger::DownloadByFileID_OnProgress(const CString& reqID, const CString& webFileID, CmmUInt32 ratio, CmmUInt32 completeSize, CmmUInt32 bitPerSecond);
+Related Enumeration
+N/A
